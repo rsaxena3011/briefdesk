@@ -1,5 +1,5 @@
-const rawAppName = "c155-stackproof";
-const rawAppTitle = "C155 Stackproof";
+const rawAppName = "briefdesk";
+const rawAppTitle = "BriefDesk";
 
 const APP_NAME_PLACEHOLDER = "{" + "{APP_NAME}}";
 const APP_TITLE_PLACEHOLDER = "{" + "{APP_TITLE}}";

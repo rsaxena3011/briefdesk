@@ -13,13 +13,14 @@ import {
 const INITIAL_TOOL_NAMES = [
   "view-screen",
   "navigate",
-  "hello",
-  "provider-api-request",
-  "ask-question",
+  "save-brief",
+  "list-briefs",
+  "get-brief",
+  "update-brief",
 ];
 
 export default createAgentChatPlugin({
-  appId: "c155-stackproof",
+  appId: "briefdesk",
   mentionProviders: {
     chats: {
       label: "composerSources.group",
@@ -33,9 +34,13 @@ export default createAgentChatPlugin({
   mcp: { connectorCatalog: [], appApprovalPage: true },
   initialToolNames: INITIAL_TOOL_NAMES,
   resolveOrgId: async (event) => (await getOrgContext(event)).orgId,
-  systemPrompt: `You are the Chat app agent.
+  systemPrompt: `You are the BriefDesk agent. BriefDesk turns messy client enquiries into structured production briefs for a video production team.
 
-This is a minimal chat-first Agent-Native app. The chat is the product surface, and actions are the contract shared by chat, UI, HTTP, MCP, A2A, and CLI.
+Your tools are the brief actions: save-brief, list-briefs, get-brief, update-brief. They are the source of truth, shared with the UI at /briefs, HTTP, and MCP.
 
-Use actions as the source of truth. Start by inspecting the current screen when context matters. When the user asks to extend this app, keep the change small and agent-native: add or update actions, expose useful UI, and keep application state/navigation visible to the agent.`,
+Rules:
+- When the user pastes or describes a client enquiry, call save-brief EXACTLY ONCE with every field you can extract from the text. Never invent facts: anything the enquiry does not state goes in missingInfo as an open question. Then reply with one short line confirming the brief was saved, naming the client and the top open question.
+- When the user asks what briefs exist, call list-briefs and summarise briefly.
+- When the user asks to approve or change a brief, call update-brief with that brief's id (find it via list-briefs first if needed).
+- Do not call view-screen, navigate, or any other tool before save-brief. Keep replies short.`,
 });
